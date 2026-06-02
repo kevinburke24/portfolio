@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kevin Burke — Software Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #181818;
+      --border: #222222;
+      --border2: #2e2e2e;
+      --text: #e8e8e8;
+      --text-muted: #666666;
+      --text-dim: #999999;
+      --accent: #c8f060;
+      --accent2: #60c8f0;
+      --red: #f06060;
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+    }
+
+    .hero-accent-blob {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,240,96,0.06) 0%, transparent 70%);
+      top: -100px;
+      right: -100px;
+      pointer-events: none;
+    }
+
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(64px, 10vw, 140px);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.35s forwards;
+    }
+    .hero-name .line2 {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--border2);
+    }
+
+    .hero-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 32px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s forwards;
+    }
+
+    .hero-desc {
+      max-width: 480px;
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .hero-desc strong { color: var(--text); font-weight: 500; }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0a;
+      font-weight: 500;
+    }
+    .btn-primary:hover { background: #d4f570; transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border2);
+    }
+    .btn-ghost:hover { border-color: var(--text-muted); color: var(--text); }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 120px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+    .section-num {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── PROJECT ── */
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 480px;
+      transition: border-color 0.3s;
+    }
+    .project-card:hover { border-color: var(--border2); }
+
+    .project-media {
+      background: var(--surface2);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .project-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+    .project-media-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 60%, rgba(10,10,10,0.4));
+      pointer-events: none;
+    }
+
+    .project-info {
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .project-tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(200,240,96,0.3);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+
+    .project-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .project-desc {
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1.8;
+      margin-bottom: 32px;
+    }
+    .project-desc strong { color: var(--text-dim); font-weight: 500; }
+
+    .project-highlights {
+      list-style: none;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .project-highlights li {
+      font-size: 12px;
+      color: var(--text-dim);
+      padding-left: 16px;
+      position: relative;
+    }
+    .project-highlights li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    .project-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .stack-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* ── EXPERIENCE ── */
+    .experience-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 48px;
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-item:first-child { border-top: 1px solid var(--border); }
+
+    .exp-meta {}
+    .exp-company {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .exp-period {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    .exp-location {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .exp-content {}
+    .exp-role {
+      font-size: 13px;
+      color: var(--accent2);
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+    .exp-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .exp-bullets li {
+      font-size: 13px;
+      color: var(--text-dim);
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.7;
+    }
+    .exp-bullets li::before {
+      content: '─';
+      position: absolute;
+      left: 0;
+      color: var(--border2);
+    }
+    .exp-bullets li strong { color: var(--text); font-weight: 400; }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .skill-group {
+      background: var(--surface);
+      padding: 32px;
+    }
+    .skill-group-label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .skill-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .skill-item {
+      font-size: 12px;
+      color: var(--text-dim);
+      background: var(--surface2);
+      padding: 4px 10px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .skill-item:hover {
+      color: var(--text);
+      border-color: var(--border2);
+    }
+
+    /* ── EDUCATION ── */
+    .edu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: start;
+    }
+    .edu-school {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .edu-degree {
+      color: var(--text-dim);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .edu-thesis {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 600px;
+      padding-left: 16px;
+      border-left: 2px solid var(--border2);
+    }
+    .edu-meta {
+      text-align: right;
+    }
+    .edu-gpa {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .edu-gpa-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .edu-period {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      border-top: 1px solid var(--border);
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .contact-left {}
+    .contact-headline {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .contact-headline span { color: var(--accent); }
+    .contact-sub {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-bottom: 32px;
+    }
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 13px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .contact-link:hover {
+      border-color: var(--border2);
+      color: var(--text);
+      transform: translateX(4px);
+    }
+    .contact-link-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+    .contact-link-label {
+      flex: 1;
+    }
+    .contact-link-value {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    .contact-right {
+      padding: 40px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .status-text {
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    .info-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-key { color: var(--text-muted); }
+    .info-val { color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 48px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 100%;
+    }
+    .footer-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .footer-copy {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      #hero { padding: 0 24px 60px; }
+      section { padding: 80px 24px; }
+      .project-card { grid-template-columns: 1fr; }
+      .project-media { min-height: 280px; border-right: none; border-bottom: 1px solid var(--border); }
+      .exp-item { grid-template-columns: 1fr; gap: 16px; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .edu-card { grid-template-columns: 1fr; }
+      .edu-meta { text-align: left; }
+      .hero-bottom { flex-direction: column; align-items: flex-start; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#hero" class="nav-logo">KB<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-accent-blob"></div>
+    <div class="hero-label">Software Engineer · Boston, MA</div>
+    <h1 class="hero-name">
+      Kevin<br>
+      <span class="line2">Burke</span>
+    </h1>
+    <div class="hero-bottom">
+      <p class="hero-desc">
+        <strong>Systems engineer turned full-stack builder.</strong> 3 years at Oracle working deep in ZFS kernel code and distributed storage. Now building products independently — from university dashboards to artist discovery platforms.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="https://github.com/kevinburke24" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <!-- Artist Discovery Platform -->
+    <div class="project-card reveal">
+      <div class="project-media">
+        <img src="artist-db-demo.gif" alt="Local Artist Database demo" />
+        <div class="project-media-overlay"></div>
+      </div>
+      <div class="project-info">
+        <div>
+          <div class="project-tag">Full-Stack · Live</div>
+          <h3 class="project-title">Local Artist Discovery Platform</h3>
+          <p class="project-desc">
+            A geo-aware database for discovering independent musicians in the Boston area. Artists self-onboard via an email-verified submission flow; fans and promoters search by zip code, radius, genre, and neighborhood.
+          </p>
+          <ul class="project-highlights">
+            <li>Geospatial search by zip code + configurable mile radius</li>
+            <li>Email verification flow for artist submissions</li>
+            <li>Dynamic filtering by genre, neighborhood, and more</li>
+            <li>Auto-populated neighborhood field from zip code lookup</li>
+            <li>Self-service onboarding with social link aggregation</li>
+          </ul>
+        </div>
+        <div>
+          <div class="project-stack">
+            <span class="stack-tag">Python</span>
+            <span class="stack-tag">FastAPI</span>
+            <span class="stack-tag">SQLAlchemy</span>
+            <span class="stack-tag">PostgreSQL</span>
+            <span class="stack-tag">React</span>
+            <span class="stack-tag">TypeScript</span>
+            <span class="stack-tag">Vite</span>
+            <span class="stack-tag">Vercel</span>
+            <span class="stack-tag">Railway</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/kevinburke24" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Dashboard -->
+    <div style="margin-top: 24px;" class="project-card reveal">
+      <div class="project-media" style="background: var(--surface2); flex-direction: column; gap: 16px; padding: 48px;">
+        <div style="width:100%; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 24px;">
+          <div style="font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">Student Overview</div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface2); border-radius: 2px; border: 1px solid var(--border);">
+              <span style="font-size: 12px; color: var(--text-dim);">At-Risk Students</span>
+              <span style="font-size: 12px; color: var(--red);">● 12</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface2); border-radius: 2px; border: 1px solid var(--border);">
+              <span style="font-size: 12px; color: var(--text-dim);">Avg GPA</span>
+              <span style="font-size: 12px; color: var(--accent);">3.42</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface2); border-radius: 2px; border: 1px solid var(--border);">
+              <span style="font-size: 12px; color: var(--text-dim);">Data Sources</span>
+              <span style="font-size: 12px; color: var(--accent2);">5 unified</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface2); border-radius: 2px; border: 1px solid var(--border);">
+              <span style="font-size: 12px; color: var(--text-dim);">Enrolled Students</span>
+              <span style="font-size: 12px; color: var(--text);">2,000+</span>
+            </div>
+          </div>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); text-align: center; font-style: italic;">Illustrative UI — not actual dashboard</div>
+      </div>
+      <div class="project-info">
+        <div>
+          <div class="project-tag">Full-Stack · Internal Tool</div>
+          <h3 class="project-title">University Student Success Dashboard</h3>
+          <p class="project-desc">
+            Built for a university advising team of 8, consolidating GPA, attendance, and contact data from 5 disparate sources into a single filterable interface for 2,000+ enrolled students.
+          </p>
+          <ul class="project-highlights">
+            <li>Eliminated a 90-minute manual reporting process — lookup time reduced to near-instant</li>
+            <li>Unified 5 separate data sources into a single normalized schema</li>
+            <li>Adopted across the entire advising staff</li>
+          </ul>
+        </div>
+        <div>
+          <div class="project-stack">
+            <span class="stack-tag">Python</span>
+            <span class="stack-tag">Flask</span>
+            <span class="stack-tag">PostgreSQL</span>
+            <span class="stack-tag">React</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/kevinburke24" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience" style="border-top: 1px solid var(--border);">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Experience</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="experience-list">
+
+      <div class="exp-item reveal">
+        <div class="exp-meta">
+          <div class="exp-company">Self-Employed</div>
+          <div class="exp-period">Nov 2023 – Present</div>
+          <div class="exp-location">Boston, MA</div>
+        </div>
+        <div class="exp-content">
+          <div class="exp-role">Independent Software Engineer</div>
+          <ul class="exp-bullets">
+            <li>Built a <strong>student success dashboard</strong> consolidating 5 data sources for 2,000+ students — eliminated a 90-minute manual reporting process, adopted by entire advising staff.</li>
+            <li>Designed and launched an <strong>independent artist collaboration platform</strong> with full-text search, dynamic filtering, and self-service onboarding — grown to 50+ MAU, facilitating 6 documented artist collaborations.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-meta">
+          <div class="exp-company">Oracle</div>
+          <div class="exp-period">Oct 2020 – Nov 2023</div>
+          <div class="exp-location">Burlington, MA</div>
+        </div>
+        <div class="exp-content">
+          <div class="exp-role">Senior Member of Technical Staff</div>
+          <ul class="exp-bullets">
+            <li>Led <strong>end-to-end network encryption</strong> for ZFS replication — reduced replication latency by up to 10% and CPU utilization by 20% for large datasets.</li>
+            <li>Contributed to a <strong>distributed backup orchestration service</strong> backed by PostgreSQL, automating snapshot creation and cloud replication across 1,000+ storage nodes.</li>
+            <li><strong>Parallelized dataset discovery</strong> during ZFS appliance kit display page load — over 50% latency reduction for 3,000 datasets at 10GB each.</li>
+            <li>Implemented <strong>content-defined chunking for deduplication</strong> — dedup ratio jumped from 2:1 to 3:1, with a 15% increase in cache utilization.</li>
+            <li>Improved <strong>ARC and L2ARC cache hit rates</strong> from ~65% to ~90% through ZFS read/write performance tuning.</li>
+            <li>Extended <strong>zdb</strong> with a recursive block traversal algorithm that dumps on-disk ZFS Intent Log (ZIL) chains in readable format.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item reveal">
+        <div class="exp-meta">
+          <div class="exp-company">Edison Innovative Power</div>
+          <div class="exp-period">Jun 2019 – Jan 2020</div>
+          <div class="exp-location">Syracuse, NY</div>
+        </div>
+        <div class="exp-content">
+          <div class="exp-role">Python / C++ Software Intern</div>
+          <ul class="exp-bullets">
+            <li>Implemented software controlling high-voltage rack data communications, monitoring, and storage.</li>
+            <li>Built security and diagnostic applications in C++ Qt Creator integrated with SQL database and hardware clock.</li>
+            <li>Designed software test fixtures for I2C and PFCSYS hardware modules.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" style="border-top: 1px solid var(--border);">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Skills</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-group">
+        <div class="skill-group-label">Languages</div>
+        <div class="skill-items">
+          <span class="skill-item">Python</span>
+          <span class="skill-item">C</span>
+          <span class="skill-item">C++</span>
+          <span class="skill-item">JavaScript</span>
+          <span class="skill-item">TypeScript</span>
+          <span class="skill-item">Java</span>
+          <span class="skill-item">R</span>
+          <span class="skill-item">MATLAB</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Libraries & Runtimes</div>
+        <div class="skill-items">
+          <span class="skill-item">FastAPI</span>
+          <span class="skill-item">Flask</span>
+          <span class="skill-item">React</span>
+          <span class="skill-item">SQLAlchemy</span>
+          <span class="skill-item">Amazon S3</span>
+          <span class="skill-item">OCI APIs</span>
+          <span class="skill-item">Java SDK</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Tools & Systems</div>
+        <div class="skill-items">
+          <span class="skill-item">PostgreSQL</span>
+          <span class="skill-item">Git</span>
+          <span class="skill-item">Vercel</span>
+          <span class="skill-item">Railway</span>
+          <span class="skill-item">Datadog</span>
+          <span class="skill-item">Ansible</span>
+          <span class="skill-item">AWS DMS</span>
+          <span class="skill-item">dtrace</span>
+          <span class="skill-item">Django</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-label">Domains</div>
+        <div class="skill-items">
+          <span class="skill-item">API Design</span>
+          <span class="skill-item">Distributed Systems</span>
+          <span class="skill-item">Database Design</span>
+          <span class="skill-item">Kernel Debugging</span>
+          <span class="skill-item">Unix/Linux</span>
+          <span class="skill-item">Compiler Design</span>
+          <span class="skill-item">Bash Scripting</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section style="border-top: 1px solid var(--border); padding-top: 80px; padding-bottom: 80px; max-width: 1200px; margin: 0 auto; padding-left: 48px; padding-right: 48px;">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Education</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-school">Union College</div>
+        <div class="edu-degree">BS in Computer Science · Schenectady, NY</div>
+        <div class="edu-thesis">
+          <strong style="color: var(--text-dim);">Thesis:</strong> Machine learning for drug-drug interaction prediction — efficient data mining across interaction databases to identify adverse event combinations, with the goal of providing a cost-effective alternative to clinical trial screenings.
+        </div>
+      </div>
+      <div class="edu-meta">
+        <div class="edu-gpa">3.56</div>
+        <div class="edu-gpa-label">GPA</div>
+        <div class="edu-period">Sept 2016 – June 2020</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-grid reveal">
+      <div class="contact-left">
+        <h2 class="contact-headline">Let's<br><span>work</span><br>together.</h2>
+        <p class="contact-sub">Open to full-time roles and interesting contract work.</p>
+        <div class="contact-links">
+          <a href="mailto:myburkek@gmail.com" class="contact-link">
+            <span class="contact-link-icon">✉</span>
+            <span class="contact-link-label">Email</span>
+            <span class="contact-link-value">myburkek@gmail.com</span>
+          </a>
+          <a href="https://github.com/kevinburke24" target="_blank" class="contact-link">
+            <span class="contact-link-icon">⌥</span>
+            <span class="contact-link-label">GitHub</span>
+            <span class="contact-link-value">kevinburke24</span>
+          </a>
+          <a href="https://linkedin.com/in/kevin-burke-004270185/" target="_blank" class="contact-link">
+            <span class="contact-link-icon">↗</span>
+            <span class="contact-link-label">LinkedIn</span>
+            <span class="contact-link-value">kevin-burke-004270185</span>
+          </a>
+          <a href="tel:9785011679" class="contact-link">
+            <span class="contact-link-icon">◎</span>
+            <span class="contact-link-label">Phone</span>
+            <span class="contact-link-value">978-501-1679</span>
+          </a>
+        </div>
+      </div>
+      <div class="contact-right">
+        <div class="status-row">
+          <div class="status-dot"></div>
+          <span class="status-text">Available for new opportunities</span>
+        </div>
+        <div class="info-rows">
+          <div class="info-row">
+            <span class="info-key">Location</span>
+            <span class="info-val">Boston, MA 02130</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">Experience</span>
+            <span class="info-val">~5 years</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">Focus</span>
+            <span class="info-val">Full-Stack / Systems</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">Stack</span>
+            <span class="info-val">Python · React · PostgreSQL</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">Open to</span>
+            <span class="info-val">Full-time · Contract</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-name">Kevin Burke</span>
+    <span class="footer-copy">Built with HTML · Hosted on Vercel</span>
+  </footer>
+
+  <script>
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
