@@ -144,8 +144,7 @@
       animation: fadeUp 0.7s 0.35s forwards;
     }
     .hero-name .line2 {
-      color: transparent;
-      -webkit-text-stroke: 1px var(--border2);
+      color: #3a3a3a;
     }
 
     .hero-bottom {
@@ -702,7 +701,7 @@
     <!-- Artist Discovery Platform -->
     <div class="project-card reveal">
       <div class="project-media">
-        <img src="artist-db-demo.gif" alt="Local Artist Database demo" />
+        <video src="artist-db-demo.mp4" autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;"></video>
         <div class="project-media-overlay"></div>
       </div>
       <div class="project-info">
@@ -739,58 +738,6 @@
       </div>
     </div>
 
-    <!-- Student Dashboard -->
-    <div style="margin-top: 24px;" class="project-card reveal">
-      <div class="project-media" style="background: var(--surface2); flex-direction: column; gap: 16px; padding: 48px;">
-        <div style="width:100%; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 24px;">
-          <div style="font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;">Student Overview</div>
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface2); border-radius: 2px; border: 1px solid var(--border);">
-              <span style="font-size: 12px; color: var(--text-dim);">At-Risk Students</span>
-              <span style="font-size: 12px; color: var(--red);">● 12</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface2); border-radius: 2px; border: 1px solid var(--border);">
-              <span style="font-size: 12px; color: var(--text-dim);">Avg GPA</span>
-              <span style="font-size: 12px; color: var(--accent);">3.42</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface2); border-radius: 2px; border: 1px solid var(--border);">
-              <span style="font-size: 12px; color: var(--text-dim);">Data Sources</span>
-              <span style="font-size: 12px; color: var(--accent2);">5 unified</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--surface2); border-radius: 2px; border: 1px solid var(--border);">
-              <span style="font-size: 12px; color: var(--text-dim);">Enrolled Students</span>
-              <span style="font-size: 12px; color: var(--text);">2,000+</span>
-            </div>
-          </div>
-        </div>
-        <div style="font-size: 11px; color: var(--text-muted); text-align: center; font-style: italic;">Illustrative UI — not actual dashboard</div>
-      </div>
-      <div class="project-info">
-        <div>
-          <div class="project-tag">Full-Stack · Internal Tool</div>
-          <h3 class="project-title">University Student Success Dashboard</h3>
-          <p class="project-desc">
-            Built for a university advising team of 8, consolidating GPA, attendance, and contact data from 5 disparate sources into a single filterable interface for 2,000+ enrolled students.
-          </p>
-          <ul class="project-highlights">
-            <li>Eliminated a 90-minute manual reporting process — lookup time reduced to near-instant</li>
-            <li>Unified 5 separate data sources into a single normalized schema</li>
-            <li>Adopted across the entire advising staff</li>
-          </ul>
-        </div>
-        <div>
-          <div class="project-stack">
-            <span class="stack-tag">Python</span>
-            <span class="stack-tag">Flask</span>
-            <span class="stack-tag">PostgreSQL</span>
-            <span class="stack-tag">React</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/kevinburke24" target="_blank" class="btn btn-ghost">GitHub ↗</a>
-          </div>
-        </div>
-      </div>
-    </div>
   </section>
 
   <!-- EXPERIENCE -->
@@ -812,8 +759,7 @@
         <div class="exp-content">
           <div class="exp-role">Independent Software Engineer</div>
           <ul class="exp-bullets">
-            <li>Built a <strong>student success dashboard</strong> consolidating 5 data sources for 2,000+ students — eliminated a 90-minute manual reporting process, adopted by entire advising staff.</li>
-            <li>Designed and launched an <strong>independent artist collaboration platform</strong> with full-text search, dynamic filtering, and self-service onboarding — grown to 50+ MAU, facilitating 6 documented artist collaborations.</li>
+            <li>Designed and launched an <strong>independent artist discovery platform</strong> with geospatial search, dynamic filtering, and email-verified self-service onboarding — grown to 50+ MAU, facilitating 6 documented artist collaborations.</li>
           </ul>
         </div>
       </div>
