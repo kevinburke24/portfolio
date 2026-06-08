@@ -122,6 +122,32 @@
       pointer-events: none;
     }
 
+    .hero-photo {
+      position: absolute;
+      top: 50%;
+      right: 80px;
+      transform: translateY(-60%);
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid var(--border2);
+      box-shadow: 0 0 0 6px rgba(200,240,96,0.06), 0 24px 48px rgba(0,0,0,0.5);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s forwards;
+    }
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: grayscale(20%) contrast(1.05);
+    }
+
+    @media (max-width: 900px) {
+      .hero-photo { display: none; }
+    }
+
     .hero-label {
       font-size: 11px;
       letter-spacing: 0.15em;
@@ -675,6 +701,9 @@
   <section id="hero">
     <div class="hero-grid-bg"></div>
     <div class="hero-accent-blob"></div>
+    <div class="hero-photo">
+      <img src="head_shot_cropped.jpeg" alt="Kevin Burke" />
+    </div>
     <div class="hero-label">Software Engineer · Boston, MA</div>
     <h1 class="hero-name">
       Kevin<br>
